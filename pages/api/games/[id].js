@@ -5,8 +5,7 @@ export default async function handler(req, res) {
   await dbConnect();
 
   if (req.method === "GET") {
-    const id = req.query.id;
-    // const {id} = req.query;
+    const { id } = req.query;
 
     try {
       const game = await Games.findById(id);

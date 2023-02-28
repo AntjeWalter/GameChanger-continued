@@ -38,11 +38,6 @@ export default function PlayerPage({
     0
   );
 
-  const playerWithChosenContestantPoints = {
-    ...currentPlayer,
-    points: sumOfChosenContestantsPoints,
-  };
-
   return (
     <>
       <SinglePlayer

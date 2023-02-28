@@ -5,6 +5,8 @@ import Games from "../../../db/Models/Games";
 export default async function handler(req, res) {
   await dbConnect();
 
+  // For future Login:
+
   /*   const session = await getSession({ req });
   const email = session?.user.email;
 

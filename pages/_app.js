@@ -4,7 +4,6 @@ import GlobalStyles from "../components/GlobalStyles";
 import { useLocalStorage } from "../helpers/hooks";
 
 function MyApp({ Component, pageProps }) {
-  //const [games, setGames] = useLocalStorage("games", []);
   const [games, setGames] = useState([]);
 
   async function getGames() {
