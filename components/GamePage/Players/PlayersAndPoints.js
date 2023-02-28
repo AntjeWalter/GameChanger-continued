@@ -3,8 +3,6 @@ import Player from "./Player";
 
 export default function PlayersAndPoints({
   playersArray,
-  onAddPoints,
-  onRemovePoints,
   gameId,
   currentGame,
   onAddChosenContstants,
@@ -18,8 +16,6 @@ export default function PlayersAndPoints({
           playerId={player.id}
           name={player.name}
           points={player.points}
-          onAddPoints={onAddPoints}
-          onRemovePoints={onRemovePoints}
           gameId={gameId}
           currentGame={currentGame}
           onAddChosenContstants={onAddChosenContstants}

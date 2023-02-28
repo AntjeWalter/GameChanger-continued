@@ -14,8 +14,6 @@ export default function GamePage({
   onAddNewContestant,
   onAddChosenContestants,
   onDeleteChosenContestant,
-  onAddPoints,
-  onRemovePoints,
   onAddContestantPoints,
   onRemoveContestantPoints,
   onAddNotes,
@@ -92,8 +90,6 @@ export default function GamePage({
           <PlayersAndPoints
             gameId={currentGame.id}
             playersArray={playersArray}
-            onAddPoints={onAddPoints}
-            onRemovePoints={onRemovePoints}
             currentGame={currentGame}
             onAddChosenContestants={onAddChosenContestants}
             onDeleteChosenContestant={onDeleteChosenContestant}
