@@ -1,104 +1,97 @@
+import { useState } from "react";
 import { useEffect } from "react";
 import GlobalStyles from "../components/GlobalStyles";
 import { useLocalStorage } from "../helpers/hooks";
 
 function MyApp({ Component, pageProps }) {
-  const [games, setGames] = useLocalStorage("games", []);
+  //const [games, setGames] = useLocalStorage("games", []);
+  const [games, setGames] = useState([]);
 
-  function handleCreateGame(newGame) {
-    setGames([...games, newGame]);
+  async function getGames() {
+    const response = await fetch("/api/games");
+    const gamesList = await response.json();
+    setGames(gamesList);
   }
 
-  function handleDeleteGame(id) {
+  useEffect(() => {
+    getGames();
+  }, []);
+
+  async function handleCreateGame(newGame) {
+    await fetch("/api/games", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newGame),
+    });
+    getGames();
+  }
+
+  async function handleDeleteGame(id) {
     if (confirm("Do you really want to delete this game?")) {
-      const updatedGames = games.filter((game) => {
-        return game.id !== id;
+      await fetch("/api/games/" + id, {
+        method: "DELETE",
       });
-      setGames([...updatedGames]);
     }
+    getGames();
   }
 
-  function handleAddNewPlayer(newPlayer, gameId) {
-    setGames(
-      games.map((game) =>
-        game.id === gameId
-          ? { ...game, players: [...game.players, newPlayer] }
-          : game
-      )
-    );
+  async function handleAddNewPlayer(newPlayer, gameId) {
+    const currentGame = games.find((game) => game.id === gameId);
+    const gameWithNewPlayer = {
+      ...currentGame,
+      players: [...currentGame.players, newPlayer],
+    };
+
+    await fetch("/api/games/" + gameId, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(gameWithNewPlayer),
+    });
+    getGames();
   }
 
-  function handleAddNewContestant(newContestant, gameId) {
-    setGames(
-      games.map((game) =>
-        game.id === gameId
-          ? { ...game, contestants: [...game.contestants, newContestant] }
-          : game
-      )
-    );
+  async function handleAddNewContestant(newContestant, gameId) {
+    const currentGame = games.find((game) => game.id === gameId);
+    const gameWithNewContestant = {
+      ...currentGame,
+      contestants: [...currentGame.contestants, newContestant],
+    };
+
+    await fetch("/api/games/" + gameId, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(gameWithNewContestant),
+    });
+    getGames();
   }
 
-  function handleAddPoints(playerId, currentGame, gameId) {
-    const currentPlayer = currentGame.players.find(
-      (player) => player.id === playerId
-    );
+  async function handleAddNotes(gameNotes, gameId) {
+    const currentGame = games.find((game) => game.id === gameId);
+    const gameWithNotes = { ...currentGame, notes: gameNotes };
 
-    const newPoints = currentPlayer.points + 1;
-    const playerNewPoints = currentGame.players.map((player) =>
-      player.id === playerId ? { ...player, points: newPoints } : player
-    );
-
-    setGames(
-      games.map((game) =>
-        game.id === gameId
-          ? {
-              ...game,
-              players: playerNewPoints,
-            }
-          : game
-      )
-    );
+    await fetch("/api/games/" + gameId, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(gameWithNotes),
+    });
+    getGames();
   }
 
-  function handleRemovePoints(playerId, currentGame, gameId) {
-    const currentPlayer = currentGame.players.find(
-      (player) => player.id === playerId
-    );
+  async function handleAddRules(gameRules, gameId) {
+    const currentGame = games.find((game) => game.id === gameId);
+    const gameWithRules = { ...currentGame, rules: gameRules };
 
-    const newPoints = currentPlayer.points - 1;
-    const playerNewPoints = currentGame.players.map((player) =>
-      player.id === playerId ? { ...player, points: newPoints } : player
-    );
-
-    setGames(
-      games.map((game) =>
-        game.id === gameId
-          ? {
-              ...game,
-              players: playerNewPoints,
-            }
-          : game
-      )
-    );
+    await fetch("/api/games/" + gameId, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(gameWithRules),
+    });
+    getGames();
   }
 
-  function handleAddNotes(gameNotes, gameId) {
-    setGames(
-      games.map((game) =>
-        game.id === gameId ? { ...game, notes: gameNotes } : game
-      )
-    );
-  }
-
-  function handleAddRules(gameRules, gameId) {
-    setGames(
-      games.map((game) =>
-        game.id === gameId ? { ...game, rules: gameRules } : game
-      )
-    );
-  }
-
-  function handleAddChosenContestants(chosenName, playerId, gameId) {
+  async function handleAddChosenContestants(chosenName, playerId, gameId) {
     const currentGame = games.find((game) => game.id === gameId);
 
     const addedContestant = currentGame.contestants.find(
@@ -114,19 +107,24 @@ function MyApp({ Component, pageProps }) {
         : player
     );
 
-    setGames(
-      games.map((game) =>
-        game.id === gameId
-          ? {
-              ...game,
-              players: playerWithChosenContestant,
-            }
-          : game
-      )
-    );
+    const gameWithPlayersChosenContestant = {
+      ...currentGame,
+      players: playerWithChosenContestant,
+    };
+
+    await fetch("/api/games/" + gameId, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(gameWithPlayersChosenContestant),
+    });
+    getGames();
   }
 
-  function handleDeleteChosenContestant(contestantId, gameId, currentPlayerId) {
+  async function handleDeleteChosenContestant(
+    contestantId,
+    gameId,
+    currentPlayerId
+  ) {
     if (
       confirm("Do you really want to delete this contestant from the list?")
     ) {
@@ -140,8 +138,6 @@ function MyApp({ Component, pageProps }) {
         return contestant.id !== contestantId;
       });
 
-      console.log(updatedList, "updatedList");
-
       const playerWithUpdatedList = currentGame.players.map((player) =>
         player.id === currentPlayerId
           ? {
@@ -151,20 +147,21 @@ function MyApp({ Component, pageProps }) {
           : player
       );
 
-      setGames(
-        games.map((game) =>
-          game.id === gameId
-            ? {
-                ...game,
-                players: playerWithUpdatedList,
-              }
-            : game
-        )
-      );
+      const gameWithUpdatedChosenContestantList = {
+        ...currentGame,
+        players: playerWithUpdatedList,
+      };
+
+      await fetch("/api/games/" + gameId, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(gameWithUpdatedChosenContestantList),
+      });
+      getGames();
     }
   }
 
-  function handleAddContestantPoints(contestantId, currentGame, gameId) {
+  async function handleAddContestantPoints(contestantId, currentGame, gameId) {
     const currentContestant = currentGame.contestants.find(
       (contestant) => contestant.id === contestantId
     );
@@ -203,20 +200,25 @@ function MyApp({ Component, pageProps }) {
       }
     );
 
-    setGames(
-      games.map((game) =>
-        game.id === gameId
-          ? {
-              ...game,
-              contestants: contestantNewPoints,
-              players: playersNewSumOfPoints,
-            }
-          : game
-      )
-    );
+    const gameWithAddedContestantPoints = {
+      ...currentGame,
+      players: playersNewSumOfPoints,
+      contestants: contestantNewPoints,
+    };
+
+    await fetch("/api/games/" + gameId, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(gameWithAddedContestantPoints),
+    });
+    getGames();
   }
 
-  function handleRemoveContestantPoints(contestantId, currentGame, gameId) {
+  async function handleRemoveContestantPoints(
+    contestantId,
+    currentGame,
+    gameId
+  ) {
     const currentContestant = currentGame.contestants.find(
       (contestant) => contestant.id === contestantId
     );
@@ -255,43 +257,56 @@ function MyApp({ Component, pageProps }) {
       }
     );
 
-    setGames(
-      games.map((game) =>
-        game.id === gameId
-          ? {
-              ...game,
-              contestants: contestantNewPoints,
-              players: playersNewSumOfPoints,
-            }
-          : game
-      )
-    );
+    const gameWithRemovedContestantPoints = {
+      ...currentGame,
+      players: playersNewSumOfPoints,
+      contestants: contestantNewPoints,
+    };
+
+    await fetch("/api/games/" + gameId, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(gameWithRemovedContestantPoints),
+    });
+    getGames();
   }
 
-  function handleDeleteContestant(contestantId, currentGame, gameId) {
+  async function handleDeleteContestant(contestantId, currentGame, gameId) {
     const updatedContestantList = currentGame.contestants.filter(
       (contestant) => {
         return contestant.id !== contestantId;
       }
     );
-    setGames(
-      games.map((game) =>
-        game.id === gameId
-          ? { ...game, contestants: [...updatedContestantList] }
-          : game
-      )
-    );
+
+    const gameWithoutDeletedContestant = {
+      ...currentGame,
+      contestants: [...updatedContestantList],
+    };
+
+    await fetch("/api/games/" + gameId, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(gameWithoutDeletedContestant),
+    });
+    getGames();
   }
 
-  function handleDeletePlayer(playerId, currentGame, gameId) {
+  async function handleDeletePlayer(playerId, currentGame, gameId) {
     const updatedPlayerList = currentGame.players.filter((player) => {
       return player.id !== playerId;
     });
-    setGames(
-      games.map((game) =>
-        game.id === gameId ? { ...game, players: [...updatedPlayerList] } : game
-      )
-    );
+
+    const gameWithoutDeletedPlayer = {
+      ...currentGame,
+      players: [...updatedPlayerList],
+    };
+
+    await fetch("/api/games/" + gameId, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(gameWithoutDeletedPlayer),
+    });
+    getGames();
   }
 
   return (
@@ -305,8 +320,6 @@ function MyApp({ Component, pageProps }) {
         onAddNewContestant={handleAddNewContestant}
         onAddChosenContestants={handleAddChosenContestants}
         onDeleteChosenContestant={handleDeleteChosenContestant}
-        onAddPoints={handleAddPoints}
-        onRemovePoints={handleRemovePoints}
         onAddContestantPoints={handleAddContestantPoints}
         onRemoveContestantPoints={handleRemoveContestantPoints}
         onAddNotes={handleAddNotes}
