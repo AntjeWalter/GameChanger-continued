@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import GlobalStyles from "../components/GlobalStyles";
-import { useLocalStorage } from "../helpers/hooks";
 
 function MyApp({ Component, pageProps }) {
   const [games, setGames] = useState([]);
