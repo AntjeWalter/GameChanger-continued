@@ -15,7 +15,7 @@ export default function Notes({ onAddNotes, notes, gameId }) {
 
   return (
     <>
-      <h4>Notes:</h4>
+      <StyledHeadline>Notes:</StyledHeadline>
       {edit ? (
         <StyledForm onSubmit={handleSubmit}>
           <StyledTextarea
@@ -37,6 +37,10 @@ export default function Notes({ onAddNotes, notes, gameId }) {
     </>
   );
 }
+
+const StyledHeadline = styled.h4`
+  margin-bottom: 10px;
+`;
 
 const StyledNotesContainer = styled.section`
   display: flex;

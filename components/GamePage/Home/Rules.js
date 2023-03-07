@@ -15,7 +15,7 @@ export default function Rules({ onAddRules, rules, gameId }) {
 
   return (
     <>
-      <h4>Rules:</h4>
+      <StyledHeadline>Rules of the game:</StyledHeadline>
       {edit ? (
         <StyledForm onSubmit={handleSubmit}>
           <StyledTextarea
@@ -37,6 +37,10 @@ export default function Rules({ onAddRules, rules, gameId }) {
     </>
   );
 }
+
+const StyledHeadline = styled.h4`
+  margin-bottom: 10px;
+`;
 
 const StyledRulesContainer = styled.section`
   display: flex;

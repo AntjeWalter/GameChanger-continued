@@ -104,6 +104,7 @@ export default function GamePage({
             onAddNewContestant={onAddNewContestant}
             gameId={currentGame.id}
           />
+          <StyledInfo>Give points to contestants:</StyledInfo>
           <StyledContestantContainer>
             <ContestantsAndPoints
               gameId={currentGame.id}
@@ -148,6 +149,7 @@ const StyledButton = styled.button`
   background-color: transparent;
   font-size: 0.9rem;
   font-family: inherit;
+  font-weight: ;
 `;
 
 const StyledBackButton = styled.button`
