@@ -149,7 +149,6 @@ const StyledButton = styled.button`
   background-color: transparent;
   font-size: 0.9rem;
   font-family: inherit;
-  font-weight: ;
 `;
 
 const StyledBackButton = styled.button`
