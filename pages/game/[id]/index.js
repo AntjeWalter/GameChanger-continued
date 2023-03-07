@@ -104,6 +104,7 @@ export default function GamePage({
             onAddNewContestant={onAddNewContestant}
             gameId={currentGame.id}
           />
+          <StyledInfo>Give points to contestants:</StyledInfo>
           <StyledContestantContainer>
             <ContestantsAndPoints
               gameId={currentGame.id}

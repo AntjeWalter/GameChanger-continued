@@ -18,7 +18,7 @@ export default function PlayerForm({ onAddNewPlayer, gameId }) {
   return (
     <>
       <StyledForm onSubmit={handlePlayerSubmit}>
-        <label>Add players:</label>
+        <label>Add player:</label>
         <StyledInput placeholder="Player Name" name="player"></StyledInput>
         <StyledButton type="submit">+</StyledButton>
       </StyledForm>
