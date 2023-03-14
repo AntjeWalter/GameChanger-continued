@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import SinglePlayer from "../../../../components/GamePage/Players/SinglePlayer";
 import styled from "styled-components";
 import { SlArrowLeftCircle } from "react-icons/sl";
+import { useSession } from "next-auth/react";
 
 export default function PlayerPage({
   gameId,
@@ -10,6 +11,7 @@ export default function PlayerPage({
   games,
   onSumChange,
 }) {
+  const { data: session } = useSession();
   const router = useRouter();
   const { id, playerId } = router.query;
 
@@ -40,19 +42,23 @@ export default function PlayerPage({
 
   return (
     <>
-      <SinglePlayer
-        playerId={playerId}
-        gameId={gameId}
-        currentPlayer={currentPlayer}
-        currentGame={currentGame}
-        onAddChosenContestants={onAddChosenContestants}
-        onDeleteChosenContestant={onDeleteChosenContestant}
-        sumOfChosenContestantsPoints={sumOfChosenContestantsPoints}
-        onSumChange={onSumChange}
-      />
-      <StyledBackButton onClick={() => router.back()}>
-        <SlArrowLeftCircle /> Back
-      </StyledBackButton>
+      {session && (
+        <>
+          <SinglePlayer
+            playerId={playerId}
+            gameId={gameId}
+            currentPlayer={currentPlayer}
+            currentGame={currentGame}
+            onAddChosenContestants={onAddChosenContestants}
+            onDeleteChosenContestant={onDeleteChosenContestant}
+            sumOfChosenContestantsPoints={sumOfChosenContestantsPoints}
+            onSumChange={onSumChange}
+          />
+          <StyledBackButton onClick={() => router.back()}>
+            <SlArrowLeftCircle /> Back
+          </StyledBackButton>
+        </>
+      )}
     </>
   );
 }

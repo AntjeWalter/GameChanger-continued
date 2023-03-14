@@ -8,6 +8,7 @@ import NotesAndRules from "../../../components/GamePage/Home/NotesAndRules";
 import ContestantsForm from "../../../components/GamePage/Contestants/ContestantsForm";
 import ContestantsAndPoints from "../../../components/GamePage/Contestants/ContestantsAndPoints";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 export default function GamePage({
   onAddNewPlayer,
@@ -22,6 +23,7 @@ export default function GamePage({
   onDeletePlayer,
   games,
 }) {
+  const { data: session } = useSession();
   const router = useRouter();
   const { id } = router.query;
 
@@ -62,67 +64,74 @@ export default function GamePage({
 
   return (
     <>
-      <h2>{currentGame.name}</h2>
-      <StyledNavigation>
-        <StyledButton onClick={handleClickHome}>Home</StyledButton>
-        <StyledButton onClick={handleClickPlayers}>Players</StyledButton>
-        <StyledButton onClick={handleClickContestants}>
-          Contestants
-        </StyledButton>
-      </StyledNavigation>
+      {session && (
+        <>
+          <h2>{currentGame.name}</h2>
+          <StyledNavigation>
+            <StyledButton onClick={handleClickHome}>Home</StyledButton>
+            <StyledButton onClick={handleClickPlayers}>Players</StyledButton>
+            <StyledButton onClick={handleClickContestants}>
+              Contestants
+            </StyledButton>
+          </StyledNavigation>
 
-      {home ? (
-        <>
-          <h3>Home</h3>
-          <NotesAndRules
-            gameId={currentGame.id}
-            onAddNotes={onAddNotes}
-            notes={currentGame.notes}
-            onAddRules={onAddRules}
-            rules={currentGame.rules}
-          />
-        </>
-      ) : players ? (
-        <>
-          <h3>Players</h3>
-          <PlayerForm onAddNewPlayer={onAddNewPlayer} gameId={currentGame.id} />
-          <StyledInfo>Click on a player to choose contestants:</StyledInfo>
-          <PlayersAndPoints
-            gameId={currentGame.id}
-            playersArray={playersArray}
-            currentGame={currentGame}
-            onAddChosenContestants={onAddChosenContestants}
-            onDeleteChosenContestant={onDeleteChosenContestant}
-            onDeletePlayer={onDeletePlayer}
-            games={games}
-          />
-        </>
-      ) : contestants ? (
-        <>
-          <h3>Contestants</h3>
-          <ContestantsForm
-            onAddNewContestant={onAddNewContestant}
-            gameId={currentGame.id}
-          />
-          <StyledInfo>Give points to contestants:</StyledInfo>
-          <StyledContestantContainer>
-            <ContestantsAndPoints
-              gameId={currentGame.id}
-              contestantsArray={contestantsArray}
-              onAddContestantPoints={onAddContestantPoints}
-              onRemoveContestantPoints={onRemoveContestantPoints}
-              onDeleteContestant={onDeleteContestant}
-              currentGame={currentGame}
-            />
-          </StyledContestantContainer>
-        </>
-      ) : null}
+          {home ? (
+            <>
+              <h3>Home</h3>
+              <NotesAndRules
+                gameId={currentGame.id}
+                onAddNotes={onAddNotes}
+                notes={currentGame.notes}
+                onAddRules={onAddRules}
+                rules={currentGame.rules}
+              />
+            </>
+          ) : players ? (
+            <>
+              <h3>Players</h3>
+              <PlayerForm
+                onAddNewPlayer={onAddNewPlayer}
+                gameId={currentGame.id}
+              />
+              <StyledInfo>Click on a player to choose contestants:</StyledInfo>
+              <PlayersAndPoints
+                gameId={currentGame.id}
+                playersArray={playersArray}
+                currentGame={currentGame}
+                onAddChosenContestants={onAddChosenContestants}
+                onDeleteChosenContestant={onDeleteChosenContestant}
+                onDeletePlayer={onDeletePlayer}
+                games={games}
+              />
+            </>
+          ) : contestants ? (
+            <>
+              <h3>Contestants</h3>
+              <ContestantsForm
+                onAddNewContestant={onAddNewContestant}
+                gameId={currentGame.id}
+              />
+              <StyledInfo>Give points to contestants:</StyledInfo>
+              <StyledContestantContainer>
+                <ContestantsAndPoints
+                  gameId={currentGame.id}
+                  contestantsArray={contestantsArray}
+                  onAddContestantPoints={onAddContestantPoints}
+                  onRemoveContestantPoints={onRemoveContestantPoints}
+                  onDeleteContestant={onDeleteContestant}
+                  currentGame={currentGame}
+                />
+              </StyledContestantContainer>
+            </>
+          ) : null}
 
-      <Link href={`/`}>
-        <StyledBackButton>
-          <SlArrowLeftCircle /> Back
-        </StyledBackButton>
-      </Link>
+          <Link href={`/`}>
+            <StyledBackButton>
+              <SlArrowLeftCircle /> Back
+            </StyledBackButton>
+          </Link>
+        </>
+      )}
     </>
   );
 }
