@@ -7,16 +7,42 @@ export default function Login() {
   return (
     <>
       {session ? (
-        <button onClick={signOut} aria-label="Ausloggen">
-          <FiLogOut size="20px" />
-        </button>
+        <>
+          <StyledLogout>
+            Logout
+            <StyledLogoutButton onClick={signOut} aria-label="Ausloggen">
+              <FiLogOut size="15px" />
+            </StyledLogoutButton>
+          </StyledLogout>
+        </>
       ) : (
         <>
-          <button onClick={() => signIn()} aria-label="Einloggen">
-            <FiLogIn /> Einloggen
-          </button>
+          <h1>GameChanger 🎲</h1>
+          <StyledLoginButton onClick={() => signIn()} aria-label="Einloggen">
+            <FiLogIn size="20px" /> Einloggen
+          </StyledLoginButton>
         </>
       )}
     </>
   );
 }
+
+const StyledLogout = styled.section`
+  text-align: right;
+  font-size: 0.8rem;
+`;
+
+const StyledLogoutButton = styled.button`
+  background-color: transparent;
+  border-radius: 3px;
+  margin-left: 5px;
+  padding-top: 3px;
+`;
+
+const StyledLoginButton = styled.button`
+  margin-top: 30px;
+  font-size: 1.2rem;
+  background-color: transparent;
+  border-radius: 3px;
+  padding-top: 3px;
+`;

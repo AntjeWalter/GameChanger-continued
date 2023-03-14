@@ -46,6 +46,7 @@ const StyledNotesContainer = styled.section`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 30px;
 `;
 
 const StyledNotes = styled.p`
