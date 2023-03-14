@@ -27,7 +27,7 @@ const gamesSchema = new Schema({
   rules: { type: String, required: false },
   players: [playersSchema],
   contestants: [contestantsSchema],
-  //user: { type: String, required: true },
+  user: { type: String, required: true },
 });
 
 const Games = mongoose.models.Games || mongoose.model("Games", gamesSchema);

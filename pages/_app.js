@@ -1,8 +1,10 @@
+import Head from "next/head";
 import { useState } from "react";
 import { useEffect } from "react";
 import GlobalStyles from "../components/GlobalStyles";
+import { SessionProvider } from "next-auth/react";
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const [games, setGames] = useState([]);
 
   async function getGames() {
@@ -308,7 +310,10 @@ function MyApp({ Component, pageProps }) {
   }
 
   return (
-    <>
+    <SessionProvider session={session}>
+      <Head>
+        <title>GameChanger</title>
+      </Head>
       <GlobalStyles />
       <Component
         {...pageProps}
@@ -326,7 +331,7 @@ function MyApp({ Component, pageProps }) {
         onDeletePlayer={handleDeletePlayer}
         games={games}
       />
-    </>
+    </SessionProvider>
   );
 }
 

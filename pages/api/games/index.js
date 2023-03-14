@@ -1,21 +1,19 @@
 import dbConnect from "../../../db/dbConnect";
 import Games from "../../../db/Models/Games";
-//import { getSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 
 export default async function handler(req, res) {
   await dbConnect();
 
-  // For future Login:
-
-  /*   const session = await getSession({ req });
+  const session = await getSession({ req });
   const email = session?.user.email;
 
   if (!email) {
     return res.status(401).json({ message: "Bitte erneut einloggen" });
-  } */
+  }
 
   if (req.method === "GET") {
-    const games = await Games.find();
+    const games = await Games.find({ user: email });
     const gamesArray = games.map((game) => {
       return {
         id: game._id,
@@ -24,6 +22,7 @@ export default async function handler(req, res) {
         notes: game.notes,
         players: game.players,
         contestants: game.contestants,
+        user: game.user,
       };
     });
 
@@ -31,7 +30,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method === "POST") {
-    const data = req.body;
+    const data = { ...req.body, user: email };
 
     try {
       const newGame = await Games.create(data);
